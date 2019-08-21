@@ -46,7 +46,7 @@ def power_analysis(coh_d, dataset, alpha):
     power = power_analyzer.solve_power(effect_size=coh_d, nobs1=len(dataset), alpha=0.15)
     return power
 
-def cohen_d(c0, c1)
+def cohen_d(c0, c1):
     # https://stackoverflow.com/a/21532472
     from statistics import mean, stdev
     from math import sqrt
@@ -89,11 +89,10 @@ def hypothesis_test_one(cleaned_data, alpha = 0.05):
         assertion = "can"
         # calculations for effect size, power, etc here as well
 
-    print(f'Based on the p value of {p_val} and our alpha of {alpha} we {status.lower()} the null hypothesis.'
-          f'\n\nDue to these results, we {assertion} state that there is a difference between the pledge rate in high-trust and low-trust countries')
-
+    print(f'Based on the p value of {round(p_val, 4)} and our alpha of {alpha} we {status.lower()} the null hypothesis.'
+          f'\n\nDue to these results, we {assertion} state that there is a difference between the pledge rate in high-trust and low-trust countries', end = ' ')
     if assertion == 'can':
-        print(f"with an effect size, cohen's d, of {str(round(coh_d, 2))} and power of {round(power, 2)}.")
+        print(f"with an effect size (cohen's d) of {str(round(coh_d, 2))} and power of {round(power, 2)}.")
     else:
         print(".")
 
