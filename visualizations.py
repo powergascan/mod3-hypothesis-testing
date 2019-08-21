@@ -54,7 +54,7 @@ def overlapping_density(package=None, input_vars=None, target_vars=None):
 
 
 
-def boxplot_plot(package=None, input_vars=None, target_vars=None):
+def boxplot_plot(package='seaborn', input_vars=None, target_vars=None, dataset=None):
     """
     Same specifications and requirements as overlapping density plot
 
@@ -70,10 +70,14 @@ def boxplot_plot(package=None, input_vars=None, target_vars=None):
     """
     plt.figure(figsize=(16, 10), dpi=80)
 
-    pass
+    if package == 'seaborn':
+        figure = sns.boxplot(y=target_vars, x=input_vars, data=dataset)
+    else:
+        print('package not specified')
+    return figure
 
 
-def visualization_one(target_var = None, input_vars= None, output_image_name=None):
+def visualization_one(target_var = None, input_var= None, dataset = None, output_image_name=None):
     """
     The visualization functions are what is used to create each individual image.
     The function should be repeatable if not generalizable
@@ -87,12 +91,14 @@ def visualization_one(target_var = None, input_vars= None, output_image_name=Non
     ###
     # Main chunk of code here
     ###
+    #ax, fig = plt.subplots(1)
+    fig = boxplot_plot('seaborn', input_var, target_var, dataset)
 
     # Starter code for labeling the image
-    plt.xlabel(None, figure = fig)
-    plt.ylabel(None, figure = fig)
-    plt.title(None, figure= fig)
-    plt.legend()
+    plt.xlabel(input_var)#, figure = fig)
+    plt.ylabel(target_var) #, figure = fig)
+    #plt.title(dataset) #, figure= fig)
+    #plt.legend()
 
     # exporting the image to the img folder
     plt.savefig(f'img/{output_image_name}.png', transparent = True, figure = fig)
