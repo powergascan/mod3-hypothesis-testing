@@ -40,6 +40,19 @@ def compare_pval_alpha(p_val, alpha):
         status = 'Reject'
     return status
 
+def power_analysis(coh_d, dataset, alpha):
+    from statsmodels.stats.power import TTestIndPower
+    power_analyzer = TTestIndPower()
+    power = power_analyzer.solve_power(effect_size=coh_d, nobs1=len(dataset), alpha=0.15)
+    return power
+
+def cohen_d(c0, c1)
+    # https://stackoverflow.com/a/21532472
+    from statistics import mean, stdev
+    from math import sqrt
+
+    coh_d = (mean(c0) - mean(c1)) / (sqrt((stdev(c0) ** 2 + stdev(c1) ** 2) / 2))
+    return coh_d
 
 def hypothesis_test_one(cleaned_data, alpha = 0.05):
     """
@@ -61,6 +74,12 @@ def hypothesis_test_one(cleaned_data, alpha = 0.05):
     
     p_val = results[1]
     
+    ### Find Cohen's D
+    coh_d = cohen_d(comparison_groups[0], comparison_groups[1])
+    
+    ### Find Power
+    power = power_analysis(coh_d, cleaned_data, alpha)
+    
     # starter code for return statement and printed results
     status = compare_pval_alpha(p_val, alpha)
     assertion = ''
@@ -74,7 +93,7 @@ def hypothesis_test_one(cleaned_data, alpha = 0.05):
           f'\n\nDue to these results, we {assertion} state that there is a difference between the pledge rate in high-trust and low-trust countries')
 
     if assertion == 'can':
-        print(f"with an effect size, cohen's d, of {str(coh_d)} and power of {power}.")
+        print(f"with an effect size, cohen's d, of {str(round(coh_d, 2))} and power of {round(power, 2)}.")
     else:
         print(".")
 
