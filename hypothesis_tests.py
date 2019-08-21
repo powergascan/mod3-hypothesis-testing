@@ -11,7 +11,7 @@ import numpy as np
 from scipy import stats
 import math
 
-def create_sample_dists(cleaned_data, y_var=None, categories=[]):
+def create_sample_dists(cleaned_data, y_var, categories):
     """
     Each hypothesis test will require you to create a sample distribution from your data
     Best make a repeatable function
@@ -23,6 +23,11 @@ def create_sample_dists(cleaned_data, y_var=None, categories=[]):
 
     """
     htest_dfs = []
+    
+    # Create categories (KDN addition)
+    for category in set(cleaned_data[categories]):
+        sample = cleaned_data[cleaned_data[categories]==category][y_var]
+        htest_dfs.append(sample)
 
     # Main chunk of code using t-tests or z-tests
     return htest_dfs
@@ -36,7 +41,7 @@ def compare_pval_alpha(p_val, alpha):
     return status
 
 
-def hypothesis_test_one(alpha = None, cleaned_data):
+def hypothesis_test_one(cleaned_data, alpha = 0.05):
     """
     Describe the purpose of your hypothesis test in the docstring
     These functions should be able to test different levels of alpha for the hypothesis test.
@@ -47,12 +52,15 @@ def hypothesis_test_one(alpha = None, cleaned_data):
     :return:
     """
     # Get data for tests
-    comparison_groups = create_sample_dists(cleaned_data=None, y_var=None, categories=[])
+    comparison_groups = create_sample_dists(cleaned_data, y_var='Pledge Rate', categories='Trust Bin')
 
     ###
     # Main chunk of code using t-tests or z-tests, effect size, power, etc
     ###
-
+    results = stats.ttest_ind(comparison_groups[0], comparison_groups[1], axis=0, equal_var=False)
+    
+    p_val = results[1]
+    
     # starter code for return statement and printed results
     status = compare_pval_alpha(p_val, alpha)
     assertion = ''
@@ -62,8 +70,8 @@ def hypothesis_test_one(alpha = None, cleaned_data):
         assertion = "can"
         # calculations for effect size, power, etc here as well
 
-    print(f'Based on the p value of {p_val} and our aplha of {alpha} we {status.lower()}  the null hypothesis.'
-          f'\n Due to these results, we  {assertion} state that there is a difference between NONE')
+    print(f'Based on the p value of {p_val} and our alpha of {alpha} we {status.lower()} the null hypothesis.'
+          f'\n\nDue to these results, we {assertion} state that there is a difference between the pledge rate in high-trust and low-trust countries')
 
     if assertion == 'can':
         print(f"with an effect size, cohen's d, of {str(coh_d)} and power of {power}.")
@@ -71,6 +79,7 @@ def hypothesis_test_one(alpha = None, cleaned_data):
         print(".")
 
     return status
+    
 
 def hypothesis_test_two():
     pass
