@@ -107,3 +107,6 @@ venv.bak/
 .json
 .json.gz
 /json_data
+
+# large data
+/data/Kickstarter_2019-08-15T03_20_03_022Z.json
