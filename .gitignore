@@ -107,3 +107,6 @@ venv.bak/
 .json
 .json.gz
 /json_data
+
+# data
+/data

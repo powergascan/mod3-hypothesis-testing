@@ -49,7 +49,6 @@ def overlapping_density(package=None, input_vars=None, target_vars=None):
     elif package == 'matplotlib':
         for variable in input_vars:
             plt.plot(..., label=None, linewidth=None, color=None, figure = fig)
-
     return fig
 
 
@@ -70,8 +69,14 @@ def boxplot_plot(package=None, input_vars=None, target_vars=None):
     """
     plt.figure(figsize=(16, 10), dpi=80)
 
-    pass
-
+    # Starter code for figuring out which package to use
+    if package == "sns":
+        for variable in input_vars:
+        sns.boxplot(...)
+    elif package == 'matplotlib':
+        for variable in input_vars:
+            plt.plot(..., label=None, linewidth=None, color=None, figure = fig)
+    return fig
 
 def visualization_one(target_var = None, input_vars= None, output_image_name=None):
     """
@@ -101,11 +106,11 @@ def visualization_one(target_var = None, input_vars= None, output_image_name=Non
 
 # please fully flesh out this function to meet same specifications of visualization one
 
-def visualization_two(output_image_name):
+def visualization_two(target_var = None, input_vars= None, output_image_name=None):
     pass
 
-def visualization_three(output_image_name):
+def visualization_three(target_var = None, input_vars= None, output_image_name=None):
     pass
 
-def visualization_four(output_image_name):
+def visualization_four(target_var = None, input_vars= None, output_image_name=None):
     pass
