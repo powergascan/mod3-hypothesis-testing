@@ -45,6 +45,5 @@ def generate_kickstarter_csv(directory, save=False, output_file=None):
     return kickstarter
 
 def kickstarter_concat(list_of_df, output_file):
-    all_df=pd.concat(list_of_df)
-    all_df.to_csv(r'data\{}.pickle'.format(output_file))
-    print('csv saved to data\\{}.pickle'.format(output_file))
+    all_df=pd.concat(list_of_df, ignore_index=True)
+    return all_df
