@@ -1,4 +1,3 @@
-def pledge_rate_mean(dataset):
-    country_grouped = dataset.groupby(['Country']).mean()
-    country_grouped['Pledge Rate'] = country_grouped['Pledged'] / country_grouped['Goal']
+def pledge_rate_mean(dataset,level):
+    country_grouped = dataset.groupby(level).mean().reset_index()
     return country_grouped

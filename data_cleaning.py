@@ -10,17 +10,18 @@ There can be an unlimited amount of support functions.
 Each support function should have an informative name and return the partially cleaned bit of the dataset.
 """
 import pandas as pd
+from datetime import datetime
 
-def float_pledges(dirty_data):
+def data_type_changes(dirty_data):
     dirty_data['Pledged'] = dirty_data['Pledged'].astype('float')
-    return dirty_data
+    dirty_data['Created_Datetime']= dirty_data['Created_Datetime'].apply(datetime.fromtimestamp)
+    dirty_data['Funding_Deadline']= dirty_data['Funding_Deadline'].apply(datetime.fromtimestamp)
+    dirty_data['Created_Month']= dirty_data['Created_Datetime']+ pd.offsets.MonthBegin(0)
 
-def support_function_two(example):
-    return example
-
-def support_function_three(example):
-    return example 
-
+def metrics(dirty_data):
+    dirty_data['Pledge_Percentage']= dirty_data['Pledged']/ dirty_data['Goal']*100
+    dirty_data['Funding_Duration']=(dirty_data['Funding_Deadline']-dirty_data['Created_Datetime'])
+    
 def full_clean(dirty_data):
     """
     This is the one function called that will run all the support functions.
@@ -29,10 +30,7 @@ def full_clean(dirty_data):
     :return: cleaned dataset to be passed to hypothesis testing and visualization modules.
     """
     #dirty_data = pd.read_csv("./data/dirty_data.csv")
-    
-    cleaning_data1 = float_pledges(dirty_data)
-    cleaning_data2 = support_function_two(cleaning_data1)
-    cleaned_data= support_function_three(cleaning_data2)
-    cleaned_data.to_csv('./data/cleaned_for_testing.csv')
-    
-    return cleaned_data
+    data_type_changes(dirty_data)
+    metrics(dirty_data)
+    #dirty_data.to_csv('./data/cleaned_for_testing.csv')
+    return dirty_data
