@@ -1,30 +1,31 @@
 import pandas as pd
+import iso3166
 
-def gen_trustdata():
+def gen_trustdata(trustdata):
     # Load in csv file
-    trustdata = pd.read_csv('data/self-reported-trust-attitudes.csv')
-
     # Select only most recent trust data by country
-    maxyear = trustdata.groupby('Entity')['Year'].max()
-    trustdata['Most Recent Year'] = False
-    for entry in range(0,len(trustdata)):
-        print(entry, "\r", end="")
-        x = trustdata.iloc[entry]['Entity']
-        if trustdata.iloc[entry]['Year'] == maxyear[x]:
-            trustdata['Most Recent Year'].iloc[entry] = True
-    trustdata = trustdata[trustdata['Most Recent Year']==True]
+#     maxyear = trustdata.groupby('Entity')['Year'].max()
+#     trustdata['Most Recent Year'] = False
+#     for entry in range(0,len(trustdata)):
+#         print(entry, "\r", end="")
+#         x = trustdata.iloc[entry]['Entity']
+#         if trustdata.iloc[entry]['Year'] == maxyear[x]:
+#             trustdata['Most Recent Year'].iloc[entry] = True
+#     trustdata = trustdata[trustdata['Most Recent Year']==True]
+    trustdata.sort_values(by=['Entity','Year'], inplace=True,ascending=[True,True])
+    trustdata=trustdata[trustdata['Year']>=2010]
+    trustdata.drop_duplicates("Entity",keep='last')
+    print('''We use the year(s) {} in the trust data'''.format(trustdata.Year.unique()))
 
-    return trustdata
+def trust_bins(trustdata,bins=[0,33,66,100],label=['Low','Medium','High']):
+    trustdata['Trust_Rank']=trustdata['Trust in others (%)'].rank(pct=True)
+    trustdata['Trust_Bin']=pd.cut(trustdata['Trust_Rank'], bins=bins, labels=label)
 
-def trust_bins(dataset):
-    trust_median = dataset['Trust in others (%)'].median()
-    dataset['Trust Bin'] = dataset['Trust in others (%)'].map(lambda x : 'High' if x > trust_median else 'Low')
-    return dataset
-
-def add_trustdata(country_dataset):
-    import iso3166
-    trustdata = gen_trustdata()
-    trustdata.index = trustdata['Code'].map(lambda x : iso3166.countries_by_alpha3[x][1])
-    country_by_trust = pd.DataFrame.join(country_dataset, trustdata['Trust in others (%)'], how='inner')
-    country_by_trust = trust_bins(country_by_trust)
+def add_trustdata(trustdata, country_dataset):
+    gen_trustdata(trustdata)
+    trust_bins(trustdata)
+    trustdata['Country'] = trustdata['Code'].map(lambda x : iso3166.countries_by_alpha3[x][1])
+    print("There are {} countries in the trust data".format(trustdata.Country.nunique()))
+    country_by_trust = country_dataset.merge(trustdata[['Trust_Bin','Trust_Rank','Country']], how='inner')
+    print('''After merge, there are {} countries in the country-trust-funding data'''.format(country_by_trust.Country.nunique()))
     return country_by_trust

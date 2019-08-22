@@ -17,10 +17,17 @@ def data_type_changes(dirty_data):
     dirty_data['Created_Datetime']= dirty_data['Created_Datetime'].apply(datetime.fromtimestamp)
     dirty_data['Funding_Deadline']= dirty_data['Funding_Deadline'].apply(datetime.fromtimestamp)
     dirty_data['Created_Month']= dirty_data['Created_Datetime']+ pd.offsets.MonthBegin(0)
+    dirty_data['Deadline_Month']= dirty_data['Funding_Deadline']+ pd.offsets.MonthBegin(0)
 
 def metrics(dirty_data):
     dirty_data['Pledge_Percentage']= dirty_data['Pledged']/ dirty_data['Goal']*100
-    dirty_data['Funding_Duration']=(dirty_data['Funding_Deadline']-dirty_data['Created_Datetime'])
+    dirty_data['Funding_Duration']=(dirty_data['Funding_Deadline']-\
+                                    dirty_data['Created_Datetime'])
+    dirty_data['Trump_Election']=dirty_data['Created_Datetime']\
+                                    >=datetime.strptime("2016-11-09",'%Y-%m-%d')
+    
+def date_filter(dirty_data,min_date="2016-07-01", max_date="2017-06-30"):
+    dirty_data=dirty_data[(dirty_data['Created_Datetime']>=datetime.strptime(min_date,'%Y-%m-%d')) & (dirty_data['Created_Datetime']<=datetime.strptime(max_date,'%Y-%m-%d'))]
     
 def full_clean(dirty_data):
     """
@@ -29,8 +36,8 @@ def full_clean(dirty_data):
 
     :return: cleaned dataset to be passed to hypothesis testing and visualization modules.
     """
-    #dirty_data = pd.read_csv("./data/dirty_data.csv")
     data_type_changes(dirty_data)
     metrics(dirty_data)
-    #dirty_data.to_csv('./data/cleaned_for_testing.csv')
+    date_filter(dirty_data)
+    dirty_data.to_pickle("data/cleaned_df.pickle")
     return dirty_data
