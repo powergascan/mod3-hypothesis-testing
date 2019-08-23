@@ -21,7 +21,7 @@ plt.style.use('seaborn-whitegrid')
 sns.set_style("white")
 
 
-def overlapping_density(package=None, input_vars=None, target_vars=None):
+def overlapping_density(input_data=None, label= ):
     """
     Set the characteristics of your overlapping density plot
     All arguments are set to None purely as a filler right now
@@ -38,22 +38,14 @@ def overlapping_density(package=None, input_vars=None, target_vars=None):
     :param target_vars:    the y variable of your plot, what you are comparing
     :return:               fig to be enhanced in subsequent visualization functions
     """
-
     # Set size of figure
     fig = plt.figure(figsize=(16, 10), dpi=80)
 
     # Starter code for figuring out which package to use
-    if package == "sns":
-        for variable in input_vars:
-            sns.kdeplot(...)
-    elif package == 'matplotlib':
-        for variable in input_vars:
-            plt.plot(..., label=None, linewidth=None, color=None, figure = fig)
+    sns.kdeplot(...)
     return fig
 
-
-
-def boxplot_plot(package=None, input_vars=None, target_vars=None):
+def boxplot_plot(x,y , data, hue=None):
     """
     Same specifications and requirements as overlapping density plot
 
@@ -68,14 +60,8 @@ def boxplot_plot(package=None, input_vars=None, target_vars=None):
     :return:               fig to be enhanced in subsequent visualization functions
     """
     plt.figure(figsize=(16, 10), dpi=80)
-
     # Starter code for figuring out which package to use
-    if package == "sns":
-        for variable in input_vars:
-        sns.boxplot(...)
-    elif package == 'matplotlib':
-        for variable in input_vars:
-            plt.plot(..., label=None, linewidth=None, color=None, figure = fig)
+    sns.boxplot(x=x,y=y, data=data, label=None, linewidth=None, color=None, figure = fig)
     return fig
 
 def visualization_one(target_var = None, input_vars= None, output_image_name=None):

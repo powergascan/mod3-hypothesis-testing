@@ -11,7 +11,7 @@ import numpy as np
 from scipy import stats
 import math
 
-def create_sample_dists(cleaned_data, y_var, categories):
+def create_sample_dists(df, var, size, n):
     """
     Each hypothesis test will require you to create a sample distribution from your data
     Best make a repeatable function
@@ -20,15 +20,12 @@ def create_sample_dists(cleaned_data, y_var, categories):
     :param categories: the categories whose means you are comparing
     :return: a list of sample distributions to be used in subsequent t-tests
     """
-    htest_dfs = []
-    
+    means = []
     # Create categories (KDN addition)
-    for category in set(cleaned_data[categories]):
-        sample = cleaned_data[cleaned_data[categories]==category][y_var]
-        htest_dfs.append(sample)
-
+    for i in range(n):
+        means.append(df[var].sample(size,replace=False).mean())
     # Main chunk of code using t-tests or z-tests
-    return htest_dfs
+    return means
 
 def compare_pval_alpha(p_val, alpha):
     status = ''
