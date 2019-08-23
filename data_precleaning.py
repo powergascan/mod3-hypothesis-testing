@@ -25,7 +25,7 @@ def generate_kickstarter_csv(directory, save=False, output_file=None):
             temp = {'Name' : directory[ks]['data']['name'],
                     'Category': directory[ks]['data']['category']['name'],
                     'Status' : directory[ks]['data']['state'],
-                    'Country' : directory[ks]['data']['country'],
+                    'Country' : directory[ks]['data']['location']['country'],
                     'State' : directory[ks]['data']['location']['state'],
                     'Goal' : directory[ks]['data']['goal'],
                     'Pledged' : directory[ks]['data']['usd_pledged'],

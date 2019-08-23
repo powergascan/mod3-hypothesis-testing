@@ -15,12 +15,10 @@ def create_sample_dists(cleaned_data, y_var, categories):
     """
     Each hypothesis test will require you to create a sample distribution from your data
     Best make a repeatable function
-
     :param cleaned_data:
     :param y_var: The numeric variable you are comparing
     :param categories: the categories whose means you are comparing
     :return: a list of sample distributions to be used in subsequent t-tests
-
     """
     htest_dfs = []
     
@@ -39,7 +37,6 @@ def compare_pval_alpha(p_val, alpha):
     else:
         status = 'Reject'
     return status
-
 
 def hypothesis_test_one(cleaned_data, alpha = 0.05):
     """
