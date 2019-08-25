@@ -10,82 +10,93 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import math
+from statistics import mean, stdev
+from math import sqrt
+from statsmodels.stats.power import TTestIndPower
+import statsmodels.formula.api as smf
 
-def create_sample_dists(cleaned_data, y_var, categories):
-    """
-    Each hypothesis test will require you to create a sample distribution from your data
-    Best make a repeatable function
+def create_sample_dists(df, var, size, n):
+    #visualize CLT
+    # - pass data in
+    # - sample from without replacement
+    # - take the mean and add it to a list
+    # - return the sample means for plotting (KDN)
+    means = []
+    for i in range(n):
+        means.append(df[var].sample(size,replace=False).mean())
+    return means
 
-    :param cleaned_data:
-    :param y_var: The numeric variable you are comparing
-    :param categories: the categories whose means you are comparing
-    :return: a list of sample distributions to be used in subsequent t-tests
-
-    """
-    htest_dfs = []
-    
-    # Create categories (KDN addition)
-    for category in set(cleaned_data[categories]):
-        sample = cleaned_data[cleaned_data[categories]==category][y_var]
-        htest_dfs.append(sample)
-
-    # Main chunk of code using t-tests or z-tests
-    return htest_dfs
-
-def compare_pval_alpha(p_val, alpha):
-    status = ''
+def compare_pval_alpha(p_val, alpha=0.05):
     if p_val > alpha:
-        status = "Fail to reject"
+        return "Fail to reject"
     else:
-        status = 'Reject'
-    return status
+        return 'Reject'
 
+def power_analysis(coh_d, length, alpha=0.05):
+    power_analyzer = TTestIndPower()
+    power = power_analyzer.solve_power(effect_size=coh_d, nobs1=length, alpha=alpha)
+    return power
 
-def hypothesis_test_one(cleaned_data, alpha = 0.05):
+def cohen_d(c0, c1):
+    coh_d = (mean(c0) - mean(c1)) / (sqrt((stdev(c0) ** 2 + stdev(c1) ** 2) / 2))
+    return coh_d
+
+def TTest(data1, data2, Null_Statement=['Mean of A', 'Mean of B', 'equal to', ''], two_sided=True, alpha=0.05):
     """
-    Describe the purpose of your hypothesis test in the docstring
-    These functions should be able to test different levels of alpha for the hypothesis test.
-    If a value of alpha is entered that is outside of the acceptable range, an error should be raised.
+    This is a very general TTest: One sample/ Two sample and One sided (mean A - mean B > 0) / Two sided (mean A - mean B =0 )
 
-    :param alpha: the critical value of choice
-    :param cleaned_data:
-    :return:
+    :param alpha: the critical value of choice, set to 0.05
+    :param data1, data2, Null_Statement (describe the null), two_sided (bool, default True)
+    :return: print strings of the Null, the testing statistic, power analysis
     """
-    # Get data for tests
-    comparison_groups = create_sample_dists(cleaned_data, y_var='Pledge Rate', categories='Trust Bin')
-
+    print(f'We test the null hypothesis of H0: {Null_Statement[0]} is {Null_Statement[2]} {Null_Statement[1]}')
+    assert(alpha<1)
     ###
     # Main chunk of code using t-tests or z-tests, effect size, power, etc
     ###
-    results = stats.ttest_ind(comparison_groups[0], comparison_groups[1], axis=0, equal_var=False)
-    
-    p_val = results[1]
-    
+    results = stats.ttest_ind(data1, data2, equal_var=False)
     # starter code for return statement and printed results
+    if two_sided:
+        p_val=results[1]
+    else:
+        p_val=results[1]/2
+        
     status = compare_pval_alpha(p_val, alpha)
-    assertion = ''
     if status == 'Fail to reject':
         assertion = 'cannot'
     else:
         assertion = "can"
-        # calculations for effect size, power, etc here as well
 
-    print(f'Based on the p value of {p_val} and our alpha of {alpha} we {status.lower()} the null hypothesis.'
-          f'\n\nDue to these results, we {assertion} state that there is a difference between the pledge rate in high-trust and low-trust countries')
+    print(f'Based on the p value of {p_val} and our alpha of {alpha} we {status.lower()} the null hypothesis.'\
+          f'\n\nDue to these results, we {assertion} {Null_Statement[3]}')
 
+    # calculations for effect size, power, etc here as well
+    coh_d= cohen_d(data1,data2)
+    power=power_analysis(coh_d, min(len(data1),len(data2)), alpha=0.05)
+    
     if assertion == 'can':
         print(f"with an effect size, cohen's d, of {str(coh_d)} and power of {power}.")
     else:
         print(".")
-
-    return status
+    return results
     
-
-def hypothesis_test_two():
-    pass
-
-def hypothesis_test_three():
-    pass
-
-def hypothesis_test_four():
-    pass
+def FTest(data, equation, Null=" ", alpha=0.05):
+    
+    print(f'We test the null hypothesis of H0: {Null}')
+    regression = smf.ols(formula=equation, data=data).fit()
+    
+    p_val=regression.f_pvalue
+    status = compare_pval_alpha(p_val, alpha)
+    
+    if status == 'Fail to reject':
+        assertion = 'cannot'
+    else:
+        assertion = "can"
+        
+    print(f'Based on the p value of {p_val} and our alpha of {alpha} we {status.lower()} the null hypothesis.')
+    
+    print("---------------------")
+    print("Here is the regression for you to reference")
+    print("---------------------")
+    print(regression.summary())
+    return regression

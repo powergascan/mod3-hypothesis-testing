@@ -4,20 +4,12 @@ import iso3166
 def gen_trustdata(trustdata):
     # Load in csv file
     # Select only most recent trust data by country
-#     maxyear = trustdata.groupby('Entity')['Year'].max()
-#     trustdata['Most Recent Year'] = False
-#     for entry in range(0,len(trustdata)):
-#         print(entry, "\r", end="")
-#         x = trustdata.iloc[entry]['Entity']
-#         if trustdata.iloc[entry]['Year'] == maxyear[x]:
-#             trustdata['Most Recent Year'].iloc[entry] = True
-#     trustdata = trustdata[trustdata['Most Recent Year']==True]
     trustdata.sort_values(by=['Entity','Year'], inplace=True,ascending=[True,True])
     trustdata=trustdata[trustdata['Year']>=2010]
     trustdata.drop_duplicates("Entity",keep='last')
     print('''We use the year(s) {} in the trust data'''.format(trustdata.Year.unique()))
 
-def trust_bins(trustdata,bins=[0,33,66,100],label=['Low','Medium','High']):
+def trust_bins(trustdata,bins=[0,0.33,0.66,1],label=['Low','Medium','High']):
     trustdata['Trust_Rank']=trustdata['Trust in others (%)'].rank(pct=True)
     trustdata['Trust_Bin']=pd.cut(trustdata['Trust_Rank'], bins=bins, labels=label)
 
