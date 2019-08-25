@@ -1,6 +1,6 @@
 import pandas as pd
 
-def DT_Effect(election_data, labels=['Bluer','Redder']):
+def DT_Effect(election_data, labels=['US Blue','US Red']):
     election_data=election_data[election_data['year'].isin([2012, 2016])]
     election_data=election_data[election_data['party'].isin(['republican'])]
     election_data.sort_values(['state_po','year'],inplace=True)

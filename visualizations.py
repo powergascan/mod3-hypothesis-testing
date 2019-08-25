@@ -3,7 +3,6 @@ This module is for your final visualization code.
 One visualization per hypothesis question is required.
 A framework for each type of visualization is provided.
 """
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -20,83 +19,42 @@ plt.rcParams.update(params)
 plt.style.use('seaborn-whitegrid')
 sns.set_style("white")
 
-
-def overlapping_density(input_data=None, label= ):
+def visualization_KDN(input_vars, labels, shades, colors, xlabel, ylabel, title, output_image_name):
     """
-    Set the characteristics of your overlapping density plot
-    All arguments are set to None purely as a filler right now
-
-    Function takes package name, input variables(categories), and target variable as input.
-    Returns a figure
-
-    Should be able to call this function in later visualization code.
-
-    PARAMETERS
-
-    :param package:        should only take sns or matplotlib as inputs, any other value should throw and error
-    :param input_vars:     should take the x variables/categories you want to plot
-    :param target_vars:    the y variable of your plot, what you are comparing
-    :return:               fig to be enhanced in subsequent visualization functions
-    """
-    # Set size of figure
-    fig = plt.figure(figsize=(16, 10), dpi=80)
-
-    # Starter code for figuring out which package to use
-    sns.kdeplot(...)
-    return fig
-
-def boxplot_plot(x,y , data, hue=None):
-    """
-    Same specifications and requirements as overlapping density plot
-
-    Function takes package name, input variables(categories), and target variable as input.
-    Returns a figure
-
-    PARAMETERS
-
-    :param package:        should only take sns or matplotlib as inputs, any other value should throw and error
-    :param input_vars:     should take the x variables/categories you want to plot
-    :param target_vars:    the y variable of your plot, what you are comparing
-    :return:               fig to be enhanced in subsequent visualization functions
-    """
-    plt.figure(figsize=(16, 10), dpi=80)
-    # Starter code for figuring out which package to use
-    sns.boxplot(x=x,y=y, data=data, label=None, linewidth=None, color=None, figure = fig)
-    return fig
-
-def visualization_one(target_var = None, input_vars= None, output_image_name=None):
-    """
-    The visualization functions are what is used to create each individual image.
-    The function should be repeatable if not generalizable
-    The function will call either the boxplot or density plot functions you wrote above
-
     :param target_var:
     :param input_vars:
     :param output_image_name: the desired name for the image saved
     :return: outputs a saved png file and returns a fig object for testing
     """
-    ###
-    # Main chunk of code here
-    ###
+    fig = plt.figure(figsize=(16, 10), dpi=80)
+    #plotting KDN
+    for i, var in enumerate(input_vars):
+        sns.kdeplot(data=var, label=labels[i], shade=shades[i], color=colors[i])
 
     # Starter code for labeling the image
-    plt.xlabel(None, figure = fig)
-    plt.ylabel(None, figure = fig)
-    plt.title(None, figure= fig)
+    plt.xlabel(xlabel, figure = fig)
+    plt.ylabel(ylabel, figure = fig)
+    plt.title(title, figure= fig)
     plt.legend()
-
     # exporting the image to the img folder
     plt.savefig(f'img/{output_image_name}.png', transparent = True, figure = fig)
     return fig
 
+def visualization_BOX(x_var, y_var, data, hue, xlabel, ylabel, title, output_image_name):
+    """
+    :param target_var:
+    :param input_vars:
+    :param output_image_name: the desired name for the image saved
+    :return: outputs a saved png file and returns a fig object for testing
+    """
+    fig = plt.figure(figsize=(16, 10), dpi=80)
+    #plotting KDN
+    sns.boxplot(x=x_var, y=y_var, data=data, hue=hue, showfliers=False)
+    # Starter code for labeling the image
+    plt.xlabel(xlabel, figure = fig)
+    plt.ylabel(ylabel, figure = fig)
+    plt.title(title, figure= fig)
+    # exporting the image to the img folder
+    plt.savefig(f'img/{output_image_name}.png', transparent = True, figure = fig)
+    return fig
 
-# please fully flesh out this function to meet same specifications of visualization one
-
-def visualization_two(target_var = None, input_vars= None, output_image_name=None):
-    pass
-
-def visualization_three(target_var = None, input_vars= None, output_image_name=None):
-    pass
-
-def visualization_four(target_var = None, input_vars= None, output_image_name=None):
-    pass
